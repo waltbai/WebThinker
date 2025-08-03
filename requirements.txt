@@ -1,0 +1,7 @@
+langgraph==0.6.2
+langchain-qwq
+langchain-community
+markdown-analysis
+markdownify
+rank_bm25
+nltk
