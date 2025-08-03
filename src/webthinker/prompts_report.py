@@ -1,4 +1,4 @@
-"""Prompts."""
+"""Prompts for report mode."""
 
 
 GENERATE_PLAN_PROMPT = (
@@ -191,7 +191,7 @@ SEARCH_INTENT_PROMPT = (
     "Original question: {research_question}\n"
     "Previous thoughts: \n"
     "{previous_thoughts}\n"
-    "Please provide the current search intent in natural language.\n"
+    "Please provide the current search intent.\n"
 )
 
 EXTRACT_INFORMATION_PROMPT = (

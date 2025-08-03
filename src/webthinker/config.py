@@ -17,3 +17,4 @@ MAX_OUTPUT_RETRY = 3
 
 # Search Query Tool
 SEARCH_TOP_K = 10
+MAX_SEARCH_LIMIT = 20

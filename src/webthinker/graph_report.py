@@ -1,4 +1,4 @@
-"""State graph."""
+"""State graph for report mode."""
 
 from typing import Annotated, Literal
 

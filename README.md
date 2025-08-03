@@ -22,10 +22,16 @@ pip install -r requirements.txt
 python -m src.webthinker.prepare
 ```
 
+### Solve Problem
+
+```shell
+python -m src.webthinker.run --dataset gaia
+```
+
 ### Generate Reports
 
 ```shell
-python -m src.webthinker.run
+python -m src.webthinker.run_report --dataset glaive
 ```
 
 ## Difference with official code
@@ -39,4 +45,3 @@ we use the chat mode instead of the completion mode in this version.
 6. Prompts are slightly modified to adapt the chat mode and tool calling.
 7. Currently, LangGraph store only supports vector indexing,
 thus, we did not use the official store.
-8. Currently, we only implement the report generation mode of webthinker.

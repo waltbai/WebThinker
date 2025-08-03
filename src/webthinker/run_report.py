@@ -1,4 +1,4 @@
-"""Run solution experiments."""
+"""Run report experiments."""
 
 import argparse
 from datetime import datetime
@@ -7,7 +7,7 @@ import os
 import nltk
 
 from src.webthinker.config import NLTK_DATA_PATH
-from src.webthinker.graph import webthinker
+from src.webthinker.graph_report import webthinker_report
 
 
 def get_args():
@@ -16,8 +16,8 @@ def get_args():
     parser.add_argument(
         "--dataset",
         type=str,
-        default="gaia",
-        choices=["gaia", ],
+        default="glaive",
+        choices=["glaive", ],
     )
     parser.add_argument(
         "--langsmith",
@@ -43,7 +43,7 @@ def main():
         os.environ["LANGSMITH_PROJECT"] = "webthinker"
 
     # Init agent
-    agent = webthinker()
+    agent = webthinker_report()
 
     # Read tasks
     fp = os.path.join("data", "datasets", f"{args.dataset}.json")
@@ -61,9 +61,10 @@ def main():
             },
             {"recursion_limit": 100}
         )
-        solution = response.get("solution", "")
-        print("Ground Truth:", task["answer"])
-        print("Model Output:", solution)
+        article = response.get("article", "")
+        fp = os.path.join(output_dir, f"{task['id']:0>2}.md")
+        with open(fp, "w", encoding="utf-8") as f:
+            f.write(article)
 
 
 if __name__ == "__main__":
