@@ -37,4 +37,6 @@ we use the chat mode instead of the completion mode in this version.
 4. Some validation check are removed since they have never been triggered.
 5. We do not implement the deep web explorer.
 6. Prompts are slightly modified to adapt the chat mode and tool calling.
-7. Currently we only implement the report generation mode of webthinker.
+7. Currently, LangGraph store only supports vector indexing,
+thus, we did not use the official store.
+8. Currently, we only implement the report generation mode of webthinker.

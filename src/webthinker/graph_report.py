@@ -2,8 +2,9 @@
 
 from typing import Annotated, Literal
 
-from langchain_core.messages import SystemMessage, get_buffer_string, ToolMessage
-from langchain_core.tools import InjectedToolArg, tool, InjectedToolCallId
+from langchain_core.messages import (SystemMessage, ToolMessage,
+                                     get_buffer_string)
+from langchain_core.tools import InjectedToolArg, InjectedToolCallId, tool
 from langgraph.graph import END, START, StateGraph
 from langgraph.prebuilt import InjectedState, ToolNode
 from langgraph.types import Command
@@ -70,7 +71,6 @@ def webthinker_report():
     # builder.add_edge("supervisor", "supervisor_tool")
     # builder.add_edge("supervisor", "final_refinement")
     builder.add_edge("final_refinement", END)
-
     return builder.compile()
 
 
@@ -351,7 +351,6 @@ def search_query(
     total_interactions = state.get("total_interactions", 0)
     history = state.get("history", [])
     url_cache = state.get("url_cache", {})
-    document_memory = state.get("document_memory", [])
     retriever = state.get("retriever", BM25Retriever())
     model = get_writer_model()
     logger = get_logger("webthinker.search_query", state.get("log_file", None))
@@ -405,11 +404,9 @@ def search_query(
 
     # Update state
     new_docs = [result["content"] for result in results]
-    document_memory.extend(new_docs)
     retriever.add_documents(new_docs)
     return Command(update={
         "url_cache": url_cache,
-        "document_memory": document_memory,
         "retriever": retriever,
         "total_interactions": total_interactions + 1,
         "history": [ToolMessage(final_information, tool_call_id=tool_call_id)],
