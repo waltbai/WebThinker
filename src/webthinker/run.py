@@ -45,7 +45,7 @@ def main():
             continue
         response = agent.invoke(
             {
-                "research_question": task["question"],
+                "research_question": task["Question"],
                 "log_file": os.path.join(output_dir, f"{task['id']:0>2}.log"),
             },
             {"recursion_limit": 100}
