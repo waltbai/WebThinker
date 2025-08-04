@@ -1,9 +1,10 @@
 """Run solution experiments."""
 
 import argparse
-from datetime import datetime
 import json
 import os
+from datetime import datetime
+
 import nltk
 
 from src.webthinker.config import NLTK_DATA_PATH
@@ -51,6 +52,7 @@ def main():
         tasks = json.load(f)
 
     # Process task
+    results = []
     for task in tasks:
         if task["id"] != 1:
             continue
@@ -62,8 +64,13 @@ def main():
             {"recursion_limit": 100}
         )
         solution = response.get("solution", "")
-        print("Ground Truth:", task["answer"])
-        print("Model Output:", solution)
+        results.append({
+            "id": task["id"],
+            "ground_truth": task["answer"],
+            "model_output": solution,
+        })
+    with open(os.path.join(output_dir, "results.json"), "w", encoding="utf-8") as f:
+        json.dump(results, f, indent=4, ensure_ascii=False)
 
 
 if __name__ == "__main__":

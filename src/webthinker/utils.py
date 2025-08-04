@@ -1,5 +1,6 @@
 """Utility functions."""
 
+import asyncio
 import json
 import logging
 import string
@@ -7,9 +8,9 @@ import urllib.request
 from typing import Dict, List, Set
 from urllib.error import HTTPError
 
-import markdownify
 import nltk
 import numpy as np
+from crawl4ai import AsyncWebCrawler
 from langchain_community.utilities import GoogleSerperAPIWrapper
 from mrkdwn_analysis import MarkdownAnalyzer
 from nltk.tokenize import word_tokenize
@@ -67,24 +68,18 @@ def search_google_serper(
     return search_results
 
 
-def fetch_content_local(url: str) -> str:
+def fetch_content(url: str) -> str:
     """Fetch webpage content."""
-    try:
-        headers = {
-            "User-Agent": (
-                "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_3) "
-                "AppleWebKit/537.36 (KHTML, like Gecko) "
-                "Chrome/35.0.1916.47 Safari/537.36"
-            ),
-        }
-        req = urllib.request.Request(url, headers=headers)
-        with urllib.request.urlopen(req) as f:
-            html_content = f.read().decode("utf-8", errors="ignore")
-        md_content = markdownify.markdownify(html_content, strip=["img", "a"])
-    except HTTPError:
-        print(f"HTTPError: Can not fetch {url}")
-        md_content = "Can not fetch the page content."
-    return md_content
+    async def fetch_content_async(url: str) -> str:
+        """Async function to fetch webpage content."""
+        async with AsyncWebCrawler() as crawler:
+            result = await crawler.arun(url)
+        if result.success and result.markdown.strip():
+            md_content = result.markdown.strip()
+        else:
+            md_content = "Can not fetch the page content."
+        return md_content
+    return asyncio.run(fetch_content_async(url))
 
 
 def bag_of_words(sent: str) -> Set[str]:

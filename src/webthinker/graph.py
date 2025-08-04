@@ -20,7 +20,7 @@ from src.webthinker.schema import (WebThinkerSolutionInputState,
                                    WebThinkerSolutionOutputState,
                                    WebThinkerSolutionState)
 from src.webthinker.utils import (extract_context_by_snippet,
-                                  fetch_content_local, format_search_results,
+                                  fetch_content, format_search_results,
                                   get_logger, search_google_serper)
 
 
@@ -197,7 +197,7 @@ def search_query(
     # Fetch webpages
     url_to_fetch = [result["url"] for result in results if result["url"] not in url_cache]
     for url in url_to_fetch:
-        content = fetch_content_local(url)
+        content = fetch_content(url)
         url_cache[url] = content
 
     # Truncate contents

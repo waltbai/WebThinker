@@ -7,6 +7,8 @@ SUPERVISOR_PROMPT = (
     "- Search query tool:  \n"
     "The system will search and analyze relevant web pages, then provide you with "
     "helpful information.\n"
+    "- Research complete tool:  \n"
+    "When you have gathered enough information to answer the question, call this tool.\n"
     "\n"
     "You can repeat the search process multiple times if necessary. "
     "The maximum number of search attempts is limited to {search_limit}.\n"
@@ -38,8 +40,12 @@ SUPERVISOR_PROMPT = (
     "\n"
     "Assistant continues reasoning with the new information...\n"
     "\n"
-    "Remember:\n"
-    "- When done searching, continue your reasoning.\n"
+    "(When assistant collect enough information to answer the question)\n"
+    "Assistant:\n"
+    "{{\"tool_call\": \"research_complete\", \"args\": {{}}}}\n"
+    "\n"
+    "Assistant thinks:\n"
+    "Based on the previous thoughts, the answer is...\n"
     "\n"
     "Please answer the following question. You should think step by step to solve it.\n"
     # "\n"
@@ -88,6 +94,7 @@ EXTRACT_INFORMATION_PROMPT = (
 )
 
 SUMMARIZE_SOLUTION_PROMPT = (
+    "You are a research assistant to solve user's research questions.\n"
     "Based on the previous thoughts, summarize the answer to the question:\n"
     "Previous thoughts:\n"
     "{previous_thoughts}\n"

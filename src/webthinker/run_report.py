@@ -1,9 +1,10 @@
 """Run report experiments."""
 
 import argparse
-from datetime import datetime
 import json
 import os
+from datetime import datetime
+
 import nltk
 
 from src.webthinker.config import NLTK_DATA_PATH

@@ -1,6 +1,7 @@
 """Prepare."""
 
 import os
+
 import nltk
 
 from src.webthinker.config import NLTK_DATA_PATH
