@@ -1,6 +1,6 @@
 """Schema."""
 
-from typing import Annotated, Any, Dict, TypedDict
+from typing import Annotated, Any, Dict, Set, TypedDict
 
 from langgraph.graph.message import add_messages
 
@@ -69,3 +69,4 @@ class WebThinkerSolutionState(TypedDict):
 
     # Search query
     url_cache: Dict[str, str]
+    executed_search_queries: Set[str]

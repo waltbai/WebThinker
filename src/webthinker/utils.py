@@ -4,14 +4,13 @@ import asyncio
 import json
 import logging
 import string
-import urllib.request
 from typing import Dict, List, Set
-from urllib.error import HTTPError
 
 import nltk
 import numpy as np
-from crawl4ai import AsyncWebCrawler
+from crawl4ai import AsyncWebCrawler, BrowserConfig, CrawlerRunConfig
 from langchain_community.utilities import GoogleSerperAPIWrapper
+from langchain_community.utilities.tavily_search import TavilySearchAPIWrapper
 from mrkdwn_analysis import MarkdownAnalyzer
 from nltk.tokenize import word_tokenize
 from rank_bm25 import BM25Okapi
@@ -24,7 +23,7 @@ def get_logger(
     """Get logger."""
     logger = logging.getLogger(name)
     if (log_file is not None) and (not logger.handlers):
-        file_handler = logging.FileHandler(log_file)
+        file_handler = logging.FileHandler(log_file, encoding="utf-8")
         logger.addHandler(file_handler)
     return logger
 
@@ -68,12 +67,49 @@ def search_google_serper(
     return search_results
 
 
+def search_tavily(
+    query: str,
+    max_results: int
+) -> List[Dict[str, str]]:
+    """Search query from tavily."""
+    search = TavilySearchAPIWrapper()
+    results = search.results(
+        query=query,
+        max_results=max_results,
+    )
+    results = sorted(results, key=lambda x: x["score"], reverse=True)
+    return [
+        {
+            "id": i,
+            "title": result["title"],
+            "url": result["url"],
+            "snippet": result["content"],
+            "content": ""
+        }
+        for i, result in enumerate(results)
+    ]
+
+
 def fetch_content(url: str) -> str:
     """Fetch webpage content."""
     async def fetch_content_async(url: str) -> str:
         """Async function to fetch webpage content."""
-        async with AsyncWebCrawler() as crawler:
-            result = await crawler.arun(url)
+        browser_config = BrowserConfig(
+            verbose=False,
+            text_mode=True,
+        )
+        run_config = CrawlerRunConfig(
+            verbose=False,
+            scan_full_page=True,
+            exclude_external_links=True,
+        )
+        async with AsyncWebCrawler(
+            config=browser_config,
+        ) as crawler:
+            result = await crawler.arun(
+                url,
+                config=run_config,
+            )
         if result.success and result.markdown.strip():
             md_content = result.markdown.strip()
         else:

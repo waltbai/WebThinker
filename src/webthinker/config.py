@@ -1,5 +1,7 @@
 """Config."""
 
+from typing import Literal
+
 # Paths
 NLTK_DATA_PATH = "./thirdparty/nltk_data"
 
@@ -16,5 +18,14 @@ MAX_INTERACTIONS = 20
 MAX_OUTPUT_RETRY = 3
 
 # Search Query Tool
+SEARCH_TOOL: Literal["tavily", "google"] = "tavily"
 SEARCH_TOP_K = 10
 MAX_SEARCH_LIMIT = 20
+
+# Evaluation
+GROUP_KEYS = [
+    "level",    # GAIA
+    "high-level domain",    # GPQA
+    "category", # HLE
+    "domain",   # WebWalkerQA
+]

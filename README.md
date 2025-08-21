@@ -45,3 +45,23 @@ we use the chat mode instead of the completion mode in this version.
 6. Prompts are slightly modified to adapt the chat mode and tool calling.
 7. Currently, LangGraph store only supports vector indexing,
 thus, we did not use the official store.
+8. We add a summarize solution step in problem solving mode.
+9. We support both google serper and tavily search (default to use tavily search).
+
+## Preliminary Result
+
+### Problem Solving Results
+
+Overall:
+
+| Dataset |    F1 |   Acc |    EM |
+| ------- | ----: | ----: | ----: |
+| GAIA    | 34.97 | 35.92 | 30.10 |
+
+Grouped:
+
+| Dataset | Group |    F1 |   Acc |    EM |
+| ------- | ----- | ----: | ----: | ----: |
+| GAIA    | 1     | 45.66 | 41.03 | 38.46 |
+| GAIA    | 2     | 31.24 | 32.69 | 28.85 |
+| GAIA    | 3     | 16.39 | 33.33 |  8.33 |

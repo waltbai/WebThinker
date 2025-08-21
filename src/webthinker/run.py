@@ -8,6 +8,8 @@ from datetime import datetime
 import nltk
 
 from src.webthinker.config import NLTK_DATA_PATH
+from src.webthinker.evaluate import (evaluate_qa, evaluate_qa_group,
+                                     identify_group)
 from src.webthinker.graph import webthinker
 
 
@@ -19,6 +21,11 @@ def get_args():
         type=str,
         default="gaia",
         choices=["gaia", ],
+    )
+    parser.add_argument(
+        "--ids",
+        type=str,
+        default="1",
     )
     parser.add_argument(
         "--langsmith",
@@ -51,26 +58,40 @@ def main():
     with open(fp, "r", encoding="utf-8") as f:
         tasks = json.load(f)
 
-    # Process task
+    # Process tasks
+    if args.ids != "all":
+        selected_ids = [int(i) for i in args.ids.split(",")]
+    else:
+        selected_ids = [task["id"] for task in tasks]
     results = []
     for task in tasks:
-        if task["id"] != 1:
+        if selected_ids and task["id"] not in selected_ids:
             continue
         response = agent.invoke(
             {
                 "research_question": task["Question"],
                 "log_file": os.path.join(output_dir, f"{task['id']:0>2}.log"),
             },
-            {"recursion_limit": 100}
+            {"recursion_limit": 200}
         )
         solution = response.get("solution", "")
         results.append({
             "id": task["id"],
-            "ground_truth": task["answer"],
-            "model_output": solution,
+            "label": task["answer"],
+            "pred": solution,
+            "group": identify_group(task),
         })
+
+    # Evaluate results
+    output = {
+        "performance": evaluate_qa(results),
+        "group_performance": evaluate_qa_group(results),
+        "results": results,
+    }
+    print("Performance:", output["performance"])
+    print("Group Performance:", output["group_performance"])
     with open(os.path.join(output_dir, "results.json"), "w", encoding="utf-8") as f:
-        json.dump(results, f, indent=4, ensure_ascii=False)
+        json.dump(output, f, indent=4, ensure_ascii=False)
 
 
 if __name__ == "__main__":

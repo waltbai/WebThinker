@@ -10,7 +10,7 @@ from langgraph.prebuilt import InjectedState, ToolNode
 from langgraph.types import Command
 
 from src.webthinker.config import (MAX_INTERACTIONS, MAX_OUTPUT_RETRY,
-                                   MAX_SEARCH_LIMIT, SEARCH_TOP_K)
+                                   MAX_SEARCH_LIMIT, SEARCH_TOOL, SEARCH_TOP_K)
 from src.webthinker.model import get_supervisor_model, get_writer_model
 from src.webthinker.prompts import (EXTRACT_INFORMATION_PROMPT,
                                     SEARCH_INTENT_PROMPT,
@@ -19,9 +19,9 @@ from src.webthinker.prompts import (EXTRACT_INFORMATION_PROMPT,
 from src.webthinker.schema import (WebThinkerSolutionInputState,
                                    WebThinkerSolutionOutputState,
                                    WebThinkerSolutionState)
-from src.webthinker.utils import (extract_context_by_snippet,
-                                  fetch_content, format_search_results,
-                                  get_logger, search_google_serper)
+from src.webthinker.utils import (extract_context_by_snippet, fetch_content,
+                                  format_search_results, get_logger,
+                                  search_google_serper, search_tavily)
 
 
 def webthinker():
@@ -44,6 +44,7 @@ def webthinker():
         ToolNode(
             [search_query, research_complete],
             messages_key="history",
+            handle_tool_errors=False,
         ),
     )
     builder.add_node(
@@ -62,7 +63,7 @@ def webthinker():
 def supervisor(
     state: WebThinkerSolutionState,
     prompt: Annotated[str, InjectedToolArg] = SUPERVISOR_PROMPT,
-) -> Command[Literal["supervisor_tool", "summarize_solution"]]:
+) -> Command[Literal["supervisor_tool", "__end__"]]:
     """Supervisor."""
     research_question = state.get("research_question", "")
     history = state.get("history", [])
@@ -73,8 +74,8 @@ def supervisor(
     logger.info("=== Supervisor ===")
 
     # Check if research complete
-    if research_complete_flag or total_interactions >= MAX_INTERACTIONS:
-        return Command(goto="summarize_solution")
+    if research_complete_flag:
+        return Command(goto=END)
 
     # Hint the supervisor to call tools
     if not history:
@@ -104,7 +105,7 @@ def supervisor(
     )
 
      # Check tool calls
-    if not response.tool_calls:
+    if not response.tool_calls or total_interactions >= MAX_INTERACTIONS:
         return Command(goto="summarize_solution")
 
     return Command(
@@ -150,17 +151,23 @@ def summarize_solution(
 ########################
 @tool
 def research_complete(
+    final_answer: Annotated[str, ..., "the final answer"],
     state: Annotated[dict, InjectedState],
     tool_call_id: Annotated[str, InjectedToolCallId],
 ) -> str:
-    """Research complete."""
+    """Complete research and output final answer."""
     logger = get_logger("webthinker.research_complete", state.get("log_file", None))
     logger.info(
         "=== Research Complete ===\n"
+        "Final answer: %s",
+        final_answer
     )
     return Command(update={
         "research_complete_flag": True,
-        "history": [ToolMessage("Research complete.", tool_call_id=tool_call_id)],
+        "solution": final_answer,
+        "history": [ToolMessage(
+            f"Final answer: {final_answer}", tool_call_id=tool_call_id)
+        ],
     })
 
 
@@ -179,9 +186,21 @@ def search_query(
     total_interactions = state.get("total_interactions", 0)
     history = state.get("history", [])
     url_cache = state.get("url_cache", {})
+    executed_search_queries = state.get("executed_search_queries", set())
     model = get_writer_model()
     logger = get_logger("webthinker.search_query", state.get("log_file", None))
     logger.info("=== Search Query ===")
+
+    # Check Query
+    if query in executed_search_queries:
+        logger.info("Query has been executed before.")
+        return Command(update={
+            "total_interactions": total_interactions + 1,
+            "history": [ToolMessage(
+                "You have already searched for this query.",
+                tool_call_id=tool_call_id,
+            )],
+        })
 
     # Generate search intent
     previous_thoughts = get_buffer_string(history)
@@ -191,9 +210,21 @@ def search_query(
     )
     response = model.invoke([SystemMessage(content)])
     search_intent = response.content
+    logger.info("Search intent generated.")
 
     # Execute search
-    results = search_google_serper(query=query, max_results=SEARCH_TOP_K)
+    if SEARCH_TOOL == "tavily":
+        results = search_tavily(query=query, max_results=SEARCH_TOP_K)
+    elif SEARCH_TOOL == "google":
+        results = search_google_serper(query=query, max_results=SEARCH_TOP_K)
+    else:
+        logger.warning(
+            "Unknown search tool: %s, default to use google.",
+            SEARCH_TOOL,
+        )
+        results = search_google_serper(query=query, max_results=SEARCH_TOP_K)
+    logger.info("Totally %d results found.", len(results))
+
     # Fetch webpages
     url_to_fetch = [result["url"] for result in results if result["url"] not in url_cache]
     for url in url_to_fetch:
@@ -228,10 +259,13 @@ def search_query(
     )
     response = model.invoke([SystemMessage(content)])
     final_information = response.content
+    executed_search_queries.add(query)
+    logger.info("Relevant information extracted.")
 
     # Update state
     return Command(update={
         "url_cache": url_cache,
+        "executed_search_queries": executed_search_queries,
         "total_interactions": total_interactions + 1,
         "history": [ToolMessage(final_information, tool_call_id=tool_call_id)],
     })

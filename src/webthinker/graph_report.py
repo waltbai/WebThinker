@@ -10,7 +10,7 @@ from langgraph.prebuilt import InjectedState, ToolNode
 from langgraph.types import Command
 
 from src.webthinker.config import (MAX_INTERACTIONS, MAX_OUTPUT_RETRY,
-                                   SEARCH_TOP_K)
+                                   SEARCH_TOOL, SEARCH_TOP_K)
 from src.webthinker.model import (get_planner_model, get_supervisor_model,
                                   get_writer_model)
 from src.webthinker.prompts_report import (EDIT_ARTICLE_PROMPT,
@@ -26,7 +26,7 @@ from src.webthinker.schema import (WebThinkerReportInputState,
 from src.webthinker.utils import (BM25Retriever, extract_context_by_snippet,
                                   extract_outline, fetch_content,
                                   format_search_results, get_logger,
-                                  search_google_serper)
+                                  search_google_serper, search_tavily)
 
 
 ############
@@ -56,6 +56,7 @@ def webthinker_report():
         ToolNode(
             [search_query, write_section, check_article, edit_article, research_complete],
             messages_key="history",
+            handle_tool_errors=False,
         ),
     )
     builder.add_node(
@@ -366,7 +367,13 @@ def search_query(
     search_intent = response.content
 
     # Execute search
-    results = search_google_serper(query=query, max_results=SEARCH_TOP_K)
+    if SEARCH_TOOL == "tavily":
+        results = search_tavily(query=query, max_results=SEARCH_TOP_K)
+    elif SEARCH_TOOL == "google":
+        results = search_google_serper(query=query, max_results=SEARCH_TOP_K)
+    else:
+        raise ValueError(f"Unknown search tool: {SEARCH_TOOL}")
+
     # Fetch webpages
     url_to_fetch = [result["url"] for result in results if result["url"] not in url_cache]
     for url in url_to_fetch:
