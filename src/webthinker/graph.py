@@ -75,6 +75,7 @@ def supervisor(
 
     # Check if research complete
     if research_complete_flag:
+        logger.info("Research complete.")
         return Command(goto=END)
 
     # Hint the supervisor to call tools

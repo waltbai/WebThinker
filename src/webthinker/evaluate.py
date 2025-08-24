@@ -6,6 +6,7 @@ from collections import Counter
 from typing import Dict, List
 
 from langchain_core.messages import SystemMessage
+from openai import APIError
 
 from src.webthinker.config import GROUP_KEYS, MAX_OUTPUT_RETRY
 from src.webthinker.model import get_evaluation_model
@@ -182,15 +183,20 @@ def llm_score(
     )
     scores = []
     for q, l, p in zip(questions, label, pred):
-        content = EVALUATE_PROMPT.format(
-            research_question=q,
-            labeled_answer=l,
-            predicted_answer=p,
-        )
-        response = model.invoke(
-            [SystemMessage(content=content)],
-        )
-        if response["justification"] == "Correct":
+        try:
+            content = EVALUATE_PROMPT.format(
+                research_question=q,
+                labeled_answer=l,
+                predicted_answer=p,
+            )
+            response = model.invoke(
+                [SystemMessage(content=content)],
+            )
+            result = response["justification"]
+        except (APIError, TypeError):
+            result = "Incorrect"
+
+        if result == "Correct":
             scores.append(1)
         else:
             scores.append(0)

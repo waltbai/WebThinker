@@ -4,7 +4,7 @@ This repository is a community version of [WebThinker](https://github.com/RUC-NL
 It aims to explore how to convert the completion mode agent into chat mode.
 
 *Notice*: This is not a perfect implementation of WebThinker,
-thus the experimental results are **just for reference**.
+thus, the experimental results are **just for reference**.
 
 ## How to use
 
@@ -60,12 +60,12 @@ Overall:
 
 | Dataset |    F1 |   Acc |    EM | LLM Score |
 | ------- | ----: | ----: | ----: | --------: |
-| GAIA    | 25.48 | 36.89 | 19.42 |     35.92 |
+| GAIA    | 23.54 | 33.01 | 18.45 |     34.95 |
 
 Grouped:
 
 | Dataset | Group |    F1 |   Acc |    EM | LLM Score |
 | ------- | ----- | ----: | ----: | ----: | --------: |
-| GAIA    | 1     | 37.17 | 48.72 | 28.21 |     43.59 |
-| GAIA    | 2     | 21.72 | 30.77 | 17.31 |     36.54 |
-| GAIA    | 3     |  3.77 | 25.00 |  0.00 |      8.33 |
+| GAIA    | 1     | 30.13 | 38.46 | 23.08 |     48.72 |
+| GAIA    | 2     | 23.11 | 34.62 | 19.23 |     30.77 |
+| GAIA    | 3     |  3.94 |  0.08 |  0.00 |      8.33 |
