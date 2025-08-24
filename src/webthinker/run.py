@@ -8,8 +8,7 @@ from datetime import datetime
 import nltk
 
 from src.webthinker.config import NLTK_DATA_PATH
-from src.webthinker.evaluate import (evaluate_qa, evaluate_qa_group,
-                                     identify_group)
+from src.webthinker.evaluate import evaluate_qa, identify_group
 from src.webthinker.graph import webthinker
 
 
@@ -29,6 +28,11 @@ def get_args():
     )
     parser.add_argument(
         "--langsmith",
+        action="store_true",
+        default=False
+    )
+    parser.add_argument(
+        "--llm_eval",
         action="store_true",
         default=False
     )
@@ -67,31 +71,34 @@ def main():
     for task in tasks:
         if selected_ids and task["id"] not in selected_ids:
             continue
-        response = agent.invoke(
-            {
-                "research_question": task["Question"],
-                "log_file": os.path.join(output_dir, f"{task['id']:0>2}.log"),
-            },
-            {"recursion_limit": 200}
-        )
-        solution = response.get("solution", "")
+        try:
+            response = agent.invoke(
+                {
+                    "research_question": task["Question"],
+                    "log_file": os.path.join(output_dir, f"{task['id']:0>2}.log"),
+                },
+                {"recursion_limit": 200}
+            )
+            solution = response.get("solution", "")
+        except Exception:
+            solution = ""
+
         results.append({
             "id": task["id"],
+            "question": task["Question"],
             "label": task["answer"],
             "pred": solution,
             "group": identify_group(task),
         })
 
     # Evaluate results
-    output = {
-        "performance": evaluate_qa(results),
-        "group_performance": evaluate_qa_group(results),
-        "results": results,
-    }
-    print("Performance:", output["performance"])
-    print("Group Performance:", output["group_performance"])
     with open(os.path.join(output_dir, "results.json"), "w", encoding="utf-8") as f:
-        json.dump(output, f, indent=4, ensure_ascii=False)
+        json.dump(results, f, indent=4, ensure_ascii=False)
+
+    performance = evaluate_qa(results, llm_eval=args.llm_eval)
+    print("Performance:", performance)
+    with open(os.path.join(output_dir, "performance.json"), "w", encoding="utf-8") as f:
+        json.dump(performance, f, indent=4, ensure_ascii=False)
 
 
 if __name__ == "__main__":

@@ -104,3 +104,19 @@ SUMMARIZE_SOLUTION_PROMPT = (
     "1. Do not include any other words except the answer.\n"
     "2. Add necessary space after each separator.\n"
 )
+
+EVALUATE_PROMPT = (
+    "You are an evaluation assistant. "
+    "Please determine if the predicted answer is equivalent to the labeled answer.\n"
+    "\n"
+    "Question: {research_question}\n"
+    "\n"
+    "Labeled Answer: {labeled_answer}\n"
+    "\n"
+    "Predicted Answer: {predicted_answer}\n"
+    "\n"
+    "Are these answers equivalent? "
+    "Please respond with \"Correct\" if they are equivalent, "
+    "or \"Incorrect\" if they are not equivalent.\n"
+    # "Do not include any other text."
+)

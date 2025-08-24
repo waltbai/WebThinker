@@ -7,11 +7,15 @@ NLTK_DATA_PATH = "./thirdparty/nltk_data"
 
 # Model
 BASEURL = "https://dashscope.aliyuncs.com/compatible-mode/v1"
-PLANNER_MODEL = "qwen3-32b"
-SUPERVISOR_MODEL = "qwen3-32b"
-WRITER_MODEL = "qwen3-32b"
-RESEARCHER_MODEL = "qwen3-32b"
+PLANNER_MODEL = "qwen2.5-32b-instruct"
+SUPERVISOR_MODEL = "qwq-32b"
+WRITER_MODEL = "qwen2.5-32b-instruct"
+EVALUATION_MODEL = "qwen2.5-32b-instruct"
 SEED = 42
+TEMPERATURE = 0.7
+TOP_P = 0.8
+TOP_K = 20
+REPETITION_PENALTY = 1.05
 
 # Supervisor
 MAX_INTERACTIONS = 20

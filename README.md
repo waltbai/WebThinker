@@ -1,6 +1,10 @@
 # WebThinker
 
 This repository is a community version of [WebThinker](https://github.com/RUC-NLPIR/WebThinker).
+It aims to explore how to convert the completion mode agent into chat mode.
+
+*Notice*: This is not a perfect implementation of WebThinker,
+thus the experimental results are **just for reference**.
 
 ## How to use
 
@@ -54,14 +58,14 @@ thus, we did not use the official store.
 
 Overall:
 
-| Dataset |    F1 |   Acc |    EM |
-| ------- | ----: | ----: | ----: |
-| GAIA    | 34.97 | 35.92 | 30.10 |
+| Dataset |    F1 |   Acc |    EM | LLM Score |
+| ------- | ----: | ----: | ----: | --------: |
+| GAIA    | 25.48 | 36.89 | 19.42 |     35.92 |
 
 Grouped:
 
-| Dataset | Group |    F1 |   Acc |    EM |
-| ------- | ----- | ----: | ----: | ----: |
-| GAIA    | 1     | 45.66 | 41.03 | 38.46 |
-| GAIA    | 2     | 31.24 | 32.69 | 28.85 |
-| GAIA    | 3     | 16.39 | 33.33 |  8.33 |
+| Dataset | Group |    F1 |   Acc |    EM | LLM Score |
+| ------- | ----- | ----: | ----: | ----: | --------: |
+| GAIA    | 1     | 37.17 | 48.72 | 28.21 |     43.59 |
+| GAIA    | 2     | 21.72 | 30.77 | 17.31 |     36.54 |
+| GAIA    | 3     |  3.77 | 25.00 |  0.00 |      8.33 |

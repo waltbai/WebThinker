@@ -210,7 +210,11 @@ def search_query(
     )
     response = model.invoke([SystemMessage(content)])
     search_intent = response.content
-    logger.info("Search intent generated.")
+    logger.info(
+        "Search intent:\n"
+        "%s\n",
+        search_intent,
+    )
 
     # Execute search
     if SEARCH_TOOL == "tavily":
@@ -223,7 +227,12 @@ def search_query(
             SEARCH_TOOL,
         )
         results = search_google_serper(query=query, max_results=SEARCH_TOP_K)
-    logger.info("Totally %d results found.", len(results))
+    logger.info(
+        "Totally %d results found:\n"
+        "%s\n",
+        len(results),
+        "\n".join(r["url"] for r in results),
+    )
 
     # Fetch webpages
     url_to_fetch = [result["url"] for result in results if result["url"] not in url_cache]
@@ -260,7 +269,11 @@ def search_query(
     response = model.invoke([SystemMessage(content)])
     final_information = response.content
     executed_search_queries.add(query)
-    logger.info("Relevant information extracted.")
+    logger.info(
+        "Relevant information extracted:\n"
+        "%s\n",
+        final_information
+    )
 
     # Update state
     return Command(update={

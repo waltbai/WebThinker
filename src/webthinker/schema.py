@@ -1,6 +1,6 @@
 """Schema."""
 
-from typing import Annotated, Any, Dict, Set, TypedDict
+from typing import Annotated, Any, Dict, Literal, Set, TypedDict
 
 from langgraph.graph.message import add_messages
 
@@ -70,3 +70,15 @@ class WebThinkerSolutionState(TypedDict):
     # Search query
     url_cache: Dict[str, str]
     executed_search_queries: Set[str]
+
+
+###################
+# Structured Output
+###################
+class EvaluationOutput(TypedDict):
+    """Output of the evaluation result."""
+    justification: Annotated[
+        Literal["Correct", "Incorrect"],
+        ...,
+        "Justification for the prediction."
+    ]

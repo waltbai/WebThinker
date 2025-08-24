@@ -95,13 +95,13 @@ def fetch_content(url: str) -> str:
     async def fetch_content_async(url: str) -> str:
         """Async function to fetch webpage content."""
         browser_config = BrowserConfig(
-            verbose=False,
+            verbose=True,
             text_mode=True,
         )
         run_config = CrawlerRunConfig(
-            verbose=False,
+            verbose=True,
             scan_full_page=True,
-            exclude_external_links=True,
+            # exclude_external_links=True,
         )
         async with AsyncWebCrawler(
             config=browser_config,
