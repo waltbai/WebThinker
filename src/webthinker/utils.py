@@ -114,6 +114,7 @@ def search_tavily(
     results = search.results(
         query=query,
         max_results=max_results,
+        search_depth="basic",
     )
     results = sorted(results, key=lambda x: x["score"], reverse=True)
     return [
