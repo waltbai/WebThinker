@@ -1,7 +1,7 @@
 # WebThinker
 
 This repository is a community version of [WebThinker](https://github.com/RUC-NLPIR/WebThinker).
-It aims to learn the popular LangGraph framework and explore how to convert the completion mode agent into chat mode agent.
+It aims to learn the popular [LangGraph](https://langchain-ai.github.io/langgraph/) framework and explore how to convert the completion mode agent into chat mode agent.
 
 *Notice*: This is not a perfect implementation of WebThinker,
 thus, the experimental results are **just for reference**.
@@ -11,7 +11,7 @@ thus, the experimental results are **just for reference**.
 ### Setup Environment
 
 ```shell
-conda create -n webthinker python=3.12
+conda create -n webthinker python=3.13
 ```
 
 ### Install Requirements
@@ -62,7 +62,7 @@ Arguments:
 
 - `--dataset`: specify the dataset.
 - `--ids`: use "all" to run all samples or specify some IDs such as "1,2,3".
-- `--langsmith`: whether to store intermediate steps in detail via LangSmith.
+- `--langsmith`: whether to store intermediate steps in detail via [LangSmith](https://www.langchain.com/langsmith).
 
 ## Difference with official code
 
@@ -73,7 +73,7 @@ Arguments:
 5. We do not implement the deep web explorer.
 6. Prompts are slightly modified to adapt the chat mode and tool calling.
 7. Currently, LangGraph store only supports vector indexing, thus, we did not use the official store.
-8. We support both google serper and tavily search (default to use google search).
+8. We support both [google serper](https://serper.dev/) and [tavily](https://www.tavily.com/) search (default to use google serper).
 
 ## Preliminary Result
 

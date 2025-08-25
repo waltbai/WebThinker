@@ -3,6 +3,6 @@ langchain-qwq
 langchain-community
 langchain-tavily
 markdown-analysis
-markdownify
 rank_bm25
 nltk
+crawl4ai
