@@ -55,7 +55,7 @@ Arguments:
 ### Generate Reports
 
 ```shell
-python -m src.webthinker.run_report --dataset glaive
+python -m src.webthinker.run_report --dataset glaive --ids all
 ```
 
 Arguments:
@@ -74,10 +74,13 @@ Arguments:
 6. Prompts are slightly modified to adapt the chat mode and tool calling.
 7. Currently, LangGraph store only supports vector indexing, thus, we did not use the official store.
 8. We support both [google serper](https://serper.dev/) and [tavily](https://www.tavily.com/) search (default to use google serper).
+9. We have not implemented the report evaluation.
 
 ## Preliminary Result
 
 ### Problem Solving Results
+
+*Notice*: This is only the results for one test round, thus there may exist randomness.
 
 Overall:
 
