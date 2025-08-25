@@ -38,7 +38,7 @@ Arguments:
 
 - `--dataset`: specify the dataset.
 - `--ids`: use "all" to run all samples or specify some IDs such as "1,2,3".
-- `--langsmith`: whether to store intermediate steps in detail via LangSmith.
+- `--langsmith`: whether to store intermediate steps in detail via [LangSmith](https://www.langchain.com/langsmith).
 - `--llm_eval`: whether to use llm evaluation.
 
 Only run evaluation:
