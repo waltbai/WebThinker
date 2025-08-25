@@ -4,13 +4,15 @@ import asyncio
 import json
 import logging
 import string
-from typing import Dict, List, Set
+from typing import Dict, List, Sequence, Set
 
 import nltk
 import numpy as np
 from crawl4ai import AsyncWebCrawler, BrowserConfig, CrawlerRunConfig
 from langchain_community.utilities import GoogleSerperAPIWrapper
 from langchain_community.utilities.tavily_search import TavilySearchAPIWrapper
+from langchain_core.messages import (AIMessage, BaseMessage, ChatMessage,
+                                     HumanMessage, SystemMessage, ToolMessage)
 from mrkdwn_analysis import MarkdownAnalyzer
 from nltk.tokenize import word_tokenize
 from rank_bm25 import BM25Okapi
@@ -22,10 +24,46 @@ def get_logger(
 ) -> logging.Logger:
     """Get logger."""
     logger = logging.getLogger(name)
-    if (log_file is not None) and (not logger.handlers):
+    if logger.handlers:
+        for handler in logger.handlers:
+            logger.removeHandler(handler)
+    if log_file is not None:
         file_handler = logging.FileHandler(log_file, encoding="utf-8")
         logger.addHandler(file_handler)
     return logger
+
+
+def get_buffer_string(
+    messages: Sequence[BaseMessage],
+    human_prefix: str = "Human",
+    ai_prefix: str = "AI"
+) -> str:
+    r"""Modify langchain function to correctly show tool_calls."""
+    string_messages = []
+    for m in messages:
+        if isinstance(m, HumanMessage):
+            role = human_prefix
+        elif isinstance(m, AIMessage):
+            role = ai_prefix
+        elif isinstance(m, SystemMessage):
+            role = "System"
+        elif isinstance(m, ToolMessage):
+            role = "Tool"
+        elif isinstance(m, ChatMessage):
+            role = m.role
+        else:
+            msg = f"Got unsupported message type: {m}"
+            raise ValueError(msg)  # noqa: TRY004
+        message = f"{role}: {m.text()}"
+        if isinstance(m, AIMessage) and m.tool_calls:
+            tool_calls = [
+                {"name": call["name"], "args": call["args"]}
+                for call in m.tool_calls
+            ]
+            message += f"{tool_calls}"
+        string_messages.append(message)
+
+    return "\n".join(string_messages)
 
 
 def extract_outline(content: str) -> str:

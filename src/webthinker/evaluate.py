@@ -1,5 +1,8 @@
 """Evaluate."""
 
+import argparse
+import json
+import os
 import re
 import string
 from collections import Counter
@@ -34,10 +37,10 @@ def normalize_qa_answer(answer: str) -> str:
     """Normalize the answer for QA tasks."""
     # Remove article (a, an, the)
     answer = re.sub(r"\b(a|an|the)\b", " ", answer)
+    # Remove punctuation
+    answer = " ".join(c for c in answer if c not in string.punctuation)
     # Remove extra spaces
     answer = " ".join(answer.strip().split())
-    # Remove punctuation
-    answer = "".join(c for c in answer if c not in string.punctuation)
     # Lowercase
     answer = answer.lower()
     return answer
@@ -66,12 +69,20 @@ def evaluate_qa(
         result["question"]
         for result in sorted(results, key=lambda x: x["id"])
     ]
-    label = [
+    norm_label = [
         normalize_qa_answer(result["label"])
         for result in sorted(results, key=lambda x: x["id"])
     ]
-    pred = [
+    label = [
+        result["label"]
+        for result in sorted(results, key=lambda x: x["id"])
+    ]
+    norm_pred = [
         normalize_qa_answer(result["pred"])
+        for result in sorted(results, key=lambda x: x["id"])
+    ]
+    pred = [
+        result["pred"]
         for result in sorted(results, key=lambda x: x["id"])
     ]
     group = [
@@ -81,9 +92,9 @@ def evaluate_qa(
 
     # Handle basic evaluation
     results = {
-        "exact_match": exact_match(label, pred, group),
-        "accuracy": accuracy(label, pred, group),
-        "f1": f1_score(label, pred, group),
+        "exact_match": exact_match(norm_label, norm_pred, group),
+        "accuracy": accuracy(norm_label, norm_pred, group),
+        "f1": f1_score(norm_label, norm_pred, group),
     }
 
     # Handle llm evaluation
@@ -213,3 +224,34 @@ def llm_score(
             for g, s in group_scores.items()
         }
     }
+
+
+def main():
+    """Directly evaluate the result."""
+    # Get path
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--path",
+        type=str,
+    )
+    parser.add_argument(
+        "--llm_eval",
+        action="store_true",
+        default=False,
+    )
+    args = parser.parse_args()
+
+    # Read file
+    with open(args.path, "r", encoding="utf-8") as f:
+        results = json.load(f)
+
+    # Evaluate
+    performance = evaluate_qa(results, llm_eval=args.llm_eval)
+    print("Performance:", performance)
+    output_path = os.path.join(os.path.dirname(args.path), "performance.json")
+    with open(output_path, "w", encoding="utf-8") as f:
+        json.dump(performance, f, ensure_ascii=False, indent=4)
+
+
+if __name__ == "__main__":
+    main()

@@ -22,7 +22,7 @@ MAX_INTERACTIONS = 20
 MAX_OUTPUT_RETRY = 3
 
 # Search Query Tool
-SEARCH_TOOL: Literal["tavily", "google"] = "tavily"
+SEARCH_TOOL: Literal["tavily", "google"] = "google"
 SEARCH_TOP_K = 10
 MAX_SEARCH_LIMIT = 20
 

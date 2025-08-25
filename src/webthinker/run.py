@@ -69,7 +69,7 @@ def main():
         selected_ids = [task["id"] for task in tasks]
     results = []
     for task in tasks:
-        if selected_ids and task["id"] not in selected_ids:
+        if task["id"] not in selected_ids:
             continue
         try:
             response = agent.invoke(

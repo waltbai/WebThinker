@@ -21,6 +21,11 @@ def get_args():
         choices=["glaive", ],
     )
     parser.add_argument(
+        "--ids",
+        type=str,
+        default="1",
+    )
+    parser.add_argument(
         "--langsmith",
         action="store_true",
         default=False
@@ -52,15 +57,19 @@ def main():
         tasks = json.load(f)
 
     # Process task
+    if args.ids != "all":
+        selected_ids = [int(i) for i in args.ids.split(",")]
+    else:
+        selected_ids = [task["id"] for task in tasks]
     for task in tasks:
-        if task["id"] != 1:
+        if task["id"] not in selected_ids:
             continue
         response = agent.invoke(
             {
                 "research_question": task["Question"],
                 "log_file": os.path.join(output_dir, f"{task['id']:0>2}.log"),
             },
-            {"recursion_limit": 100}
+            {"recursion_limit": 200}
         )
         article = response.get("article", "")
         fp = os.path.join(output_dir, f"{task['id']:0>2}.md")
