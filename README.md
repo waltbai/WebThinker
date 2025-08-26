@@ -26,6 +26,9 @@ pip install -r requirements.txt
 python -m src.webthinker.prepare
 ```
 
+*Notice*: Problem solving datasets in `data/encoded` are encoded to avoid web crawler.
+They are decoded during data preparation.
+
 ### Solve Problem
 
 Run inference and evaluation:

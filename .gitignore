@@ -138,6 +138,7 @@ outputs/
 logs/
 thirdparty/
 *.DS_Store/
+data/datasets/
 
 # VS code
 .vscode/
