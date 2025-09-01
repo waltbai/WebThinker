@@ -139,6 +139,7 @@ logs/
 thirdparty/
 *.DS_Store/
 data/datasets/
+uv.lock
 
 # VS code
 .vscode/
