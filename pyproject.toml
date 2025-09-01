@@ -20,7 +20,7 @@ dependencies = [
 prepare = "webthinker.prepare:main"
 qa = "webthinker.run:main"
 report = "webthinker.run_report:main"
-eval = "webthinker.evaluate:main
+eval = "webthinker.evaluate:main"
 
 [build-system]
 requires = ["uv_build>=0.8.14,<0.9.0"]
