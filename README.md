@@ -12,10 +12,8 @@ thus, the experimental results are **just for reference**.
 
 ```shell
 uv venv
-# Windows
-.venv\Scripts\activate
-# Linux
-source .venv/bin/activate
+source .venv/bin/activate   # Windows: .venv\Scripts\activate
+cp .env.example .env
 ```
 
 ### Install Requirements

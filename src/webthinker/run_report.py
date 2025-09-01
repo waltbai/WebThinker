@@ -5,6 +5,7 @@ import json
 import os
 from datetime import datetime
 
+from dotenv import load_dotenv
 import nltk
 
 from webthinker.config import NLTK_DATA_PATH
@@ -35,6 +36,7 @@ def get_args():
 
 def main():
     """Main function."""
+    load_dotenv()
     args = get_args()
 
     # Set paths
