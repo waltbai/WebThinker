@@ -8,25 +8,23 @@ from langgraph.graph import END, START, StateGraph
 from langgraph.prebuilt import InjectedState, ToolNode
 from langgraph.types import Command
 
-from src.webthinker.config import (MAX_INTERACTIONS, MAX_OUTPUT_RETRY,
-                                   SEARCH_TOOL, SEARCH_TOP_K)
-from src.webthinker.model import (get_planner_model, get_supervisor_model,
-                                  get_writer_model)
-from src.webthinker.prompts_report import (EDIT_ARTICLE_PROMPT,
-                                           EXTRACT_INFORMATION_PROMPT,
-                                           FINAL_REFINEMENT_PROMPT,
-                                           GENERATE_PLAN_PROMPT,
-                                           SEARCH_INTENT_PROMPT,
-                                           SUPERVISOR_PROMPT, TITLE_PROMPT,
-                                           WRITE_SECTION_PROMPT)
-from src.webthinker.schema import (WebThinkerReportInputState,
-                                   WebThinkerReportOutputState,
-                                   WebThinkerReportState)
-from src.webthinker.utils import (BM25Retriever, extract_context_by_snippet,
-                                  extract_outline, fetch_content,
-                                  format_search_results, get_buffer_string,
-                                  get_logger, search_google_serper,
-                                  search_tavily)
+from webthinker.config import (MAX_INTERACTIONS, MAX_OUTPUT_RETRY, SEARCH_TOOL,
+                               SEARCH_TOP_K)
+from webthinker.model import (get_planner_model, get_supervisor_model,
+                              get_writer_model)
+from webthinker.prompts_report import (EDIT_ARTICLE_PROMPT,
+                                       EXTRACT_INFORMATION_PROMPT,
+                                       FINAL_REFINEMENT_PROMPT,
+                                       GENERATE_PLAN_PROMPT,
+                                       SEARCH_INTENT_PROMPT, SUPERVISOR_PROMPT,
+                                       TITLE_PROMPT, WRITE_SECTION_PROMPT)
+from webthinker.schema import (WebThinkerReportInputState,
+                               WebThinkerReportOutputState,
+                               WebThinkerReportState)
+from webthinker.utils import (BM25Retriever, extract_context_by_snippet,
+                              extract_outline, fetch_content,
+                              format_search_results, get_buffer_string,
+                              get_logger, search_google_serper, search_tavily)
 
 
 ############

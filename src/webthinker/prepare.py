@@ -5,7 +5,7 @@ import os
 
 import nltk
 
-from src.webthinker.config import NLTK_DATA_PATH
+from webthinker.config import NLTK_DATA_PATH
 
 
 def main():
@@ -23,6 +23,9 @@ def main():
     for dataset in datasets:
         in_path = f"data/encoded/{dataset}.json"
         out_path = f"data/datasets/{dataset}.json"
+        if os.path.exists(out_path):
+            print(f"Dataset {dataset} already exists.")
+            continue
         with open(in_path, "r", encoding="utf-8") as f:
             enc_data = f.read()
         dec_data = base64.b64decode(enc_data.encode("utf-8")).decode("utf-8")

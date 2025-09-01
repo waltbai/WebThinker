@@ -7,9 +7,9 @@ from datetime import datetime
 
 import nltk
 
-from src.webthinker.config import NLTK_DATA_PATH
-from src.webthinker.evaluate import evaluate_qa, identify_group
-from src.webthinker.graph import webthinker
+from webthinker.config import NLTK_DATA_PATH
+from webthinker.evaluate import evaluate_qa, identify_group
+from webthinker.graph import webthinker
 
 
 def get_args():
@@ -45,7 +45,7 @@ def main():
 
     # Set paths
     nltk.data.path.append(NLTK_DATA_PATH)
-    subdir = f"webthinker_{args.dataset}" + datetime.now().strftime("%Y%m%d_%H%M%S")
+    subdir = f"webthinker_{args.dataset}_" + datetime.now().strftime("%Y%m%d_%H%M%S")
     output_dir = os.path.join("outputs", subdir, args.dataset)
     os.makedirs(output_dir, exist_ok=True)
 

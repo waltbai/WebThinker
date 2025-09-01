@@ -11,19 +11,23 @@ thus, the experimental results are **just for reference**.
 ### Setup Environment
 
 ```shell
-conda create -n webthinker python=3.13
+uv venv
+# Windows
+.venv\Scripts\activate
+# Linux
+source .venv/bin/activate
 ```
 
 ### Install Requirements
 
 ```shell
-pip install -r requirements.txt
+uv sync
 ```
 
 ### Prepare Data
 
 ```shell
-python -m src.webthinker.prepare
+uv run prepare
 ```
 
 *Notice*: Problem solving datasets in `data/encoded` are encoded to avoid web crawler.
@@ -34,7 +38,7 @@ They are decoded during data preparation.
 Run inference and evaluation:
 
 ```shell
-python -m src.webthinker.run --dataset gaia --ids all --llm_eval
+uv run qa --dataset gaia --ids all --llm_eval
 ```
 
 Arguments:
@@ -47,7 +51,7 @@ Arguments:
 Only run evaluation:
 
 ```shell
-python -m src.webthinker.evaluate --path /path/to/results.json --llm_eval
+uv run evaluate --path /path/to/results.json --llm_eval
 ```
 
 Arguments:
@@ -58,7 +62,7 @@ Arguments:
 ### Generate Reports
 
 ```shell
-python -m src.webthinker.run_report --dataset glaive --ids all
+uv run report --dataset glaive --ids all
 ```
 
 Arguments:

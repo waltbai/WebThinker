@@ -11,10 +11,10 @@ from typing import Dict, List
 from langchain_core.messages import SystemMessage
 from openai import APIError
 
-from src.webthinker.config import GROUP_KEYS, MAX_OUTPUT_RETRY
-from src.webthinker.model import get_evaluation_model
-from src.webthinker.prompts import EVALUATE_PROMPT
-from src.webthinker.schema import EvaluationOutput
+from webthinker.config import GROUP_KEYS, MAX_OUTPUT_RETRY
+from webthinker.model import get_evaluation_model
+from webthinker.prompts import EVALUATE_PROMPT
+from webthinker.schema import EvaluationOutput
 
 
 def identify_group(

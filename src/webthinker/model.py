@@ -3,9 +3,9 @@
 from langchain_core.language_models import LanguageModelLike
 from langchain_qwq import ChatQwen, ChatQwQ
 
-from src.webthinker.config import (BASEURL, EVALUATION_MODEL, PLANNER_MODEL,
-                                   REPETITION_PENALTY, SEED, SUPERVISOR_MODEL,
-                                   TEMPERATURE, TOP_K, TOP_P, WRITER_MODEL)
+from webthinker.config import (BASEURL, EVALUATION_MODEL, PLANNER_MODEL,
+                               REPETITION_PENALTY, SEED, SUPERVISOR_MODEL,
+                               TEMPERATURE, TOP_K, TOP_P, WRITER_MODEL)
 
 
 def get_planner_model() -> LanguageModelLike:

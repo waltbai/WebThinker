@@ -1,0 +1,27 @@
+[project]
+name = "webthinker"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "crawl4ai>=0.7.4",
+    "langchain-community>=0.3.29",
+    "langchain-qwq>=0.2.1",
+    "langchain-tavily>=0.2.11",
+    "langgraph>=0.6.6",
+    "markdown-analysis>=0.1.5",
+    "nltk>=3.9.1",
+    "python-dotenv>=1.1.1",
+    "rank-bm25>=0.2.2",
+]
+
+[project.scripts]
+prepare = "webthinker.prepare:main"
+qa = "webthinker.run:main"
+report = "webthinker.run_report:main"
+eval = "webthinker.evaluate:main
+
+[build-system]
+requires = ["uv_build>=0.8.14,<0.9.0"]
+build-backend = "uv_build"
